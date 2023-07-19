@@ -22,27 +22,27 @@
     ></script>
     <script>
       function mypayment() {
-        const imp_code= process.env.imp;
+        //const imp_code= process.env.imp;
         const myAmount = Number(document.getElementById("amount").value);
-        const myName = document.getElementById("name").value;
-        const myEmail = document.getElementById("email").value;
-        const myCommodity = document.getElementById("commodity").value;
-        const myAdress = document.getElementById("address").value;
+        const myName = "홍길동";
+        const myEmail = "gildong@gmail.com";
+        const myCommodity = "마우스";
+        const myAdress = "서울특별시 강남구 신사동";
 
         const IMP = window.IMP; // 생략 가능
-        IMP.init(imp_code); // Example: imp00000000
+        IMP.init("imp45506818"); // Example: imp00000000
         IMP.request_pay(
           {
             // param
             pg: "kakaopay",
             pay_method: "card",
-            name: "마우스",
+            name: myCommodity,
             amount: myAmount,
             buyer_email: myEmail,
             buyer_name: myName,
             buyer_tel: "010-3333-3333",
             buyer_addr: myAdress,
-            buyer_postcode: "33333",
+            buyer_postcode: "01181",
             m_redirect_url: "http://localhost:3000", // 모바일 결제후 리다이렉트될 주소!!
           },
           function (rsp) {
@@ -71,10 +71,10 @@
     </script>
   </head>
   <body>
-    구매자 이름: <input type="text" id="name" />
+    <!--구매자 이름: <input type="text" id="name" />
     구매자 이메일: <input type="text" id="email" />
     구매자 주소: <input type="text" id="address" />
-    결제할 상품:  <input type="text" id="commodity" />
+    결제할 상품:  <input type="text" id="commodity" />-->
     결제할 금액: <input type="text" id="amount" />
     <button onclick="mypayment()">결제하기</button>
   </body>
