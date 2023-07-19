@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>결제하기</title>
+    <script
+      type="text/javascript"
+      src="https://code.jquery.com/jquery-1.12.4.min.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://unpkg.com/axios/dist/axios.min.js"
+    ></script>
+
+    <script
+      src="https://code.jquery.com/jquery-3.3.1.min.js"
+      integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      function mypayment() {
+        const imp_code= process.env.imp;
+        const myAmount = Number(document.getElementById("amount").value);
+
+        const IMP = window.IMP; // 생략 가능
+        IMP.init(imp_code); // Example: imp00000000
+        IMP.request_pay(
+          {
+            // param
+            pg: "kakaopay",
+            pay_method: "card",
+            name: "마우스",
+            amount: myAmount,
+            buyer_email: "gildong@gmail.com",
+            buyer_name: "홍길동",
+            buyer_tel: "010-4242-4242",
+            buyer_addr: "서울특별시 강남구 신사동",
+            buyer_postcode: "01181",
+            m_redirect_url: "http://localhost:3000", // 모바일 결제후 리다이렉트될 주소!!
+          },
+          function (rsp) {
+      			//rsp.imp_uid 값으로 결제 단건조회 API를 호출하여 결제결과를 판단합니다.
+            if (rsp.success) {
+              $.ajax({
+                url: "/payment/validate/" + rsp.imp_uid,
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({
+                  imp_uid: rsp.imp_uid,            // 결제 고유번호
+                  merchant_uid: rsp.merchant_uid,   // 주문번호
+                  amount: rsp.paid_amount
+                }),
+            }).done(function (data) {
+              // 가맹점 서버 결제 API 성공시 로직
+              })
+            } else {
+                alert("결제에 실패하였습니다. 에러 내용: " + rsp.error_msg);
+            }
+          },   
+        );
+      }
+    </script>
+  </head>
+  <body>
+    결제할 금액: <input type="text" id="amount" />
+    <button onclick="mypayment()">결제하기</button>
+  </body>
+</html>
