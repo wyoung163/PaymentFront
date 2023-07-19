@@ -2,6 +2,9 @@ const express = require("express"); // express 모듈 셋팅
 const ejs = require("ejs"); // 페이지 로딩을 위해 필수
 const app = express();
 
+require("dotenv").config();
+const imp_code= process.env.IMP_CODE;
+
 // view 엔진을 ejs를 쓰겠다는 설정
 app.set("view engine", "ejs");
 
@@ -13,7 +16,7 @@ app.get("/", function(req, res){
 
 // 카카오페이 결제창 호출
 app.get("/pay", function(req, res){
-    res.render("payment", {}); // views 폴더 밑에 있는 파일을 참조함
+    res.render("payment", {imp_code: imp_code}); // views 폴더 밑에 있는 파일을 참조함
 });
 
 // 서버 띄울때 포트 정보 셋팅 및 처음 실행 시 필요한 기능 수행 가능
