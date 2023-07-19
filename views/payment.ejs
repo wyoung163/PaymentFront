@@ -22,7 +22,7 @@
     ></script>
     <script>
       function mypayment() {
-        //const imp_code= process.env.imp;
+        const imp_code = $('h1').text();
         const myAmount = Number(document.getElementById("amount").value);
         const myName = String(document.getElementById("name").value);
         const myEmail = String(document.getElementById("email").value);
@@ -30,7 +30,7 @@
         const myAdress = String(document.getElementById("address").value);
 
         const IMP = window.IMP; // 생략 가능
-        IMP.init("imp45506818"); // Example: imp00000000
+        IMP.init(imp_code); 
         IMP.request_pay(
           {
             // param
@@ -70,7 +70,12 @@
         );
       }
     </script>
+	<style>
+		h1.none { display: none; }
+		p.hidden { visibility: hidden; }
+	</style>
   </head>
+  <h1 class="none"><%= imp_code %></h1 id="imp_code">
   <body>
     구매자 이름: <input type="text" id="name" />
     구매자 이메일: <input type="text" id="email" />
