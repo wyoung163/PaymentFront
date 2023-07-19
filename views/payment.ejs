@@ -49,7 +49,11 @@
       			//rsp.imp_uid 값으로 결제 단건조회 API를 호출하여 결제결과를 판단합니다.
             if (rsp.success) {
               $.ajax({
-                url: "/payment/validate",
+                url: "/verifyIamport" + rsp.imp_uid,
+                method: "POST",
+                contentType: "application/json",
+              /*$.ajax({
+                url: "/payment/validate" + rsp.imp_uid,
                 method: "POST",
                 contentType: "application/json",
                 data: JSON.stringify({
@@ -59,9 +63,32 @@
                   buyer: myEmail,
                   address: myAdress,
                   commodity: myCommodity
-                }),
-            }).done(function (data) {
+                }), */
+            }).done(function (result) {
               // 가맹점 서버 결제 API 성공시 로직
+              // rsp.paid_amount와 result.response.amount(서버 검증) 비교 후 로직 실행
+                if(rsp.paid_amount === result.response.amount){
+                    $.ajax({
+                      url: "/payment" + rsp.imp_uid,
+                      method: "POST",
+                      contentType: "application/json",
+                      data: JSON.stringify({
+                        imp_uid: rsp.imp_uid,            // 결제 고유번호
+                        merchant_uid: rsp.merchant_uid,   // 주문번호
+                        amount: rsp.paid_amount,
+                        buyer: myEmail,
+                        address: myAdress,
+                        commodity: myCommodity})
+                    }).done(function() {
+                        alert("결제가 완료되었습니다.");
+                        window.location.reload();
+                    }).fail(function(error){
+                        alert(JSON.stringify(error));
+                    })
+                } else{
+                    alert("결제에 실패했습니다."+"에러코드 : "+rsp.error_code+"에러 메시지 : "+rsp.error_message);
+
+                }
               })
             } else {
                 alert("결제에 실패하였습니다. 에러 내용: " + rsp.error_msg);
